@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+#------------------------------------------
+### Exit when a command fails
+#------------------------------------------
+set -e
+
+#------------------------------------------
+### Trace what gets executed conditionally
+#------------------------------------------
+if [[ "${VERBOSE}" == "true" ]]; then
+  set -x
+fi
+
+#------------------------------------------
+### Synchronize AWS_REGION and AWS_DEFAULT_REGION
+#------------------------------------------
+if [[ -n "${AWS_REGION}" && -z "${AWS_DEFAULT_REGION}" ]]; then
+  export AWS_DEFAULT_REGION="${AWS_REGION}"
+  echo "AWS_DEFAULT_REGION was not set. Setting it to the value of AWS_REGION: ${AWS_DEFAULT_REGION}"
+fi
+
+if [[ -n "${AWS_DEFAULT_REGION}" && -z "${AWS_REGION}" ]]; then
+  export AWS_REGION="${AWS_DEFAULT_REGION}"
+  echo "AWS_REGION was not set. Setting it to the value of AWS_DEFAULT_REGION: ${AWS_REGION}"
+fi
+
+#------------------------------------------
+### Set correctly TF_DIR
+#------------------------------------------
+TF_DIRS=$(find . -type f -name '*.tf' ! -path './backend/*' ! -path '*/.terraform/*' -exec dirname {} \; | sort -u)
+
+if [[ "$TF_DIRS" == *"terraform"* ]]; then
+  export TF_DIR="terraform"
+elif [[ "$TF_DIRS" == *"src"* ]]; then
+  export TF_DIR="src"
+elif [[ "$TF_DIRS" == *"."* ]]; then
+  export TF_DIR="."
+else
+  echo "No .tf files found in any directory."
+  exit 1
+fi
+
+echo "TF_DIR is set to: $TF_DIR"
+
+#------------------------------------------
+### Terraform init
+#------------------------------------------
+
+_tf_init() {
+  if [[ -n "${TF_RESOURCE_GROUP}" ]] && [[ -n "${TF_STORAGE_ACCOUNT}" ]]; then
+    echo "Both Azure Terraform backend environment variables are set."
+    tenv tf use latest-allowed &&
+    terraform -chdir="${TF_DIR}" init -reconfigure \
+      -backend-config="resource_group_name=${TF_RESOURCE_GROUP}" \
+      -backend-config="storage_account_name=${TF_STORAGE_ACCOUNT}" \
+      -backend-config="container_name=${TF_CONTAINER_NAME}" \
+      -backend-config="key=${TF_CONTAINER_NAME}"
+  
+  elif [[ -z "${AWS_ACCESS_KEY_ID}" ]] || [[ -z "${AWS_SECRET_ACCESS_KEY}" ]]; then
+    echo "One or both AWS environment variables are not set."
+    tenv tf use latest-allowed &&
+    terraform -chdir="${TF_DIR}" init -backend=false
+  
+  else
+    echo "Both AWS environment variables are set."
+    echo "Using AWS region: ${AWS_DEFAULT_REGION}"
+    tenv tf use latest-allowed &&
+    terraform -chdir="${TF_DIR}" init -reconfigure \
+      -backend-config="key=${TF_BACKEND_KEY}.tfstate" \
+      -backend-config="bucket=${TF_BACKEND_BUCKET}" \
+      -backend-config="dynamodb_table=${TF_BACKEND_DYNAMODB_TABLE}" \
+      -backend-config="region=${AWS_DEFAULT_REGION}" \
+      -backend-config="access_key=${AWS_ACCESS_KEY_ID}" \
+      -backend-config="secret_key=${AWS_SECRET_ACCESS_KEY}"
+  fi
+}
+
+#------------------------------------------
+### Terraform plan
+#------------------------------------------
+_tf_plan() {
+  if [[ -z "${TF_TARGET}" ]]; then
+    echo "Running Terraform plan for the entire configuration."
+    terraform -chdir="${TF_DIR}" plan -input=false -compact-warnings
+  else
+    echo "Running Terraform plan with target: ${TF_TARGET}"
+    terraform -chdir="${TF_DIR}" plan -var-file=parameters/"${TF_ENV}".tfvars -target="${TF_TARGET}" -input=false -compact-warnings
+  fi
+}
+
+#------------------------------------------
+### Terraform apply
+#------------------------------------------
+_tf_apply() {
+  if [[ -z "${TF_TARGET}" ]]; then
+    echo "Running Terraform apply for the entire configuration."
+    terraform -chdir="${TF_DIR}" apply -input=false -compact-warnings -auto-approve
+  else
+    echo "Running Terraform apply with target: ${TF_TARGET}"
+    terraform -chdir="${TF_DIR}" apply -var-file=parameters/"${TF_ENV}".tfvars -target="${TF_TARGET}" -input=false -compact-warnings -auto-approve
+  fi
+}
+
+#------------------------------------------
+### Main
+#------------------------------------------
+
+case $1 in
+  init)
+    _tf_init
+    ;;
+  plan)
+    _tf_plan
+    ;;
+  apply)
+    _tf_apply
+    ;;
+  *)
+    echo "Invalid argument \"$1\""
+    exit 1
+    ;;
+esac

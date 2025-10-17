@@ -1,0 +1,104 @@
+image: usertechnologies/node:lts-bookworm-2025.02.04
+
+definitions:
+  caches:
+    npm: $HOME/.npm
+
+steps:
+  - step: &validate-npm-lock-file
+      name: Validate npm lock file
+      caches:
+        - npm
+      script:
+        - npm ci
+
+  - step: &release
+      name: Release and generate changelog
+      image: usertechnologies/release
+      script:
+        - git remote set-url origin ${BITBUCKET_GIT_SSH_ORIGIN}
+        - release
+
+  - step: &spellcheck
+      name: Check grammar and spelling
+      image: usertechnologies/code-scanner:18
+      script:
+        - typos-check
+
+  - step: &build-website
+      name: Build Website
+      caches:
+        - npm
+      script:
+        - npm ci
+        - npm run build
+
+pipelines:
+  pull-requests:
+    "**":
+      - parallel:
+          steps:
+            - step: *validate-npm-lock-file
+            - step: *spellcheck
+            - step: *build-website
+
+  branches:
+    master:
+      - parallel:
+          steps:
+            - step: *validate-npm-lock-file
+      - step: *release
+
+    release/**:
+      - step:
+          name: Deploy to Development
+          deployment: development
+          caches:
+            - npm
+          script:
+            - npm ci
+            - npm run build
+            - npm run ci:terraform:init
+            - npm run ci:terraform:plan
+            - npm run ci:terraform:apply
+            - pipe: atlassian/aws-s3-deploy:2.1.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                S3_BUCKET: $AWS_S3_BUCKET_ORIGIN_NAME
+                LOCAL_PATH: "build/"
+            - pipe: atlassian/aws-cloudfront-invalidate:0.12.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                DISTRIBUTION_ID: $AWS_CLOUDFRONT_DISTRIBUTION_ID
+                PATHS: "/*"
+
+      - step:
+          name: Deploy to Production
+          deployment: production
+          trigger: manual
+          caches:
+            - npm
+          script:
+            - npm ci
+            - npm run build
+            - npm run ci:terraform:init
+            - npm run ci:terraform:plan
+            - npm run ci:terraform:apply
+            - pipe: atlassian/aws-s3-deploy:2.1.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                S3_BUCKET: $AWS_S3_BUCKET_ORIGIN_NAME
+                LOCAL_PATH: "build/"
+            - pipe: atlassian/aws-cloudfront-invalidate:0.12.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                DISTRIBUTION_ID: $AWS_CLOUDFRONT_DISTRIBUTION_ID
+                PATHS: "/*"

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="soc2Title">
+  <title id="soc2Title">SOC 2 Type II</title>
+  <defs>
+    <linearGradient id="soc2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#14b8a6" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#soc2Gradient)" />
+  <circle cx="60" cy="60" r="47" fill="#ffffff" />
+  <path
+    d="M60 22a38 38 0 1 1 0 76 38 38 0 0 1 0-76z"
+    fill="#f1f5f9"
+  />
+  <text
+    x="60"
+    y="56"
+    text-anchor="middle"
+    font-family="Inter, 'Segoe UI', sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="#0f172a"
+  >
+    SOC
+  </text>
+  <text
+    x="60"
+    y="86"
+    text-anchor="middle"
+    font-family="Inter, 'Segoe UI', sans-serif"
+    font-size="20"
+    font-weight="600"
+    letter-spacing="0.08em"
+    fill="#0f172a"
+  >
+    TYPE II
+  </text>
+</svg>

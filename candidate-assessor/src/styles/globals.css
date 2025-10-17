@@ -1,0 +1,440 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+
+  /* CandidateAssessor Design Tokens */
+  --background: #f5f7fb;
+  --foreground: #121b2c;
+  --card: #ffffff;
+  --card-foreground: #121b2c;
+  --popover: #ffffff;
+  --popover-foreground: #121b2c;
+
+  /* Brand Colors */
+  --primary: #0f8a7e;
+  --primary-foreground: #ffffff;
+  --primary-dark: #0c6f66;
+  --primary-pressed: #094e45;
+
+  /* Secondary & Neutral */
+  --secondary: #ffb347;
+  --secondary-foreground: #3c240a;
+  --neutral: #525d72;
+  --neutral-foreground: #121b2c;
+
+  /* Surface & Muted */
+  --muted: #e7ecf5;
+  --muted-foreground: #566179;
+  --accent: #f4f1eb;
+  --accent-foreground: #121b2c;
+
+  /* Functional Colors */
+  --destructive: #f26666;
+  --destructive-foreground: #ffffff;
+  --border: #d1d7e6;
+  --input: transparent;
+  --input-background: #ffffff;
+  --input-border: #c3cadc;
+  --switch-background: #0f8a7e;
+  --ring: #0f8a7e;
+
+  /* Typography */
+  --font-heading: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  /* Chart Colors */
+  --chart-1: #0f8a7e;
+  --chart-2: #ffb347;
+  --chart-3: #2c9ad1;
+  --chart-4: #3c60ff;
+  --chart-5: #7f8fb3;
+
+  /* Spacing (8-point grid) */
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-8: 2rem; /* 32px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-16: 4rem; /* 64px */
+
+  /* Border Radius */
+  --radius: 0.75rem; /* 12px */
+
+  /* Typography Scale */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.5rem; /* 24px */
+  --text-xl: 2rem; /* 32px */
+  --text-2xl: 2.5rem; /* 40px */
+
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #121b2c;
+  --sidebar-primary: #0f8a7e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f1eb;
+  --sidebar-accent-foreground: #1d2a3b;
+  --sidebar-border: #d1d7e6;
+  --sidebar-ring: #ffb347;
+}
+
+.dark {
+  /* CandidateAssessor dark mode */
+  --background: #0b1723;
+  --foreground: #e8ecff;
+  --card: #0f1d2d;
+  --card-foreground: #eef2ff;
+  --popover: #122236;
+  --popover-foreground: #eef2ff;
+
+  /* Brand Colors */
+  --primary: #27b3a5;
+  --primary-foreground: #ffffff;
+  --primary-dark: #199287;
+  --primary-pressed: #15766d;
+
+  /* Secondary & Neutral */
+  --secondary: #ffb860;
+  --secondary-foreground: #362108;
+  --neutral: #7b87a9;
+  --neutral-foreground: #f6f7ff;
+
+  /* Surface & Muted */
+  --muted: #14233a;
+  --muted-foreground: #9fb1d8;
+  --accent: #1a2c3f;
+  --accent-foreground: #eef2ff;
+
+  /* Functional Colors */
+  --destructive: #ff7a7a;
+  --destructive-foreground: #250710;
+  --border: #1a2a46;
+  --input: transparent;
+  --input-background: #122236;
+  --input-border: #24385a;
+  --ring: #27b3a5;
+
+  /* Chart Colors */
+  --chart-1: #27b3a5;
+  --chart-2: #ffb860;
+  --chart-3: #2d8ddb;
+  --chart-4: #76d7ff;
+  --chart-5: #ffd480;
+
+  /* Sidebar */
+  --sidebar: #0c1b2c;
+  --sidebar-foreground: #e8edff;
+  --sidebar-primary: #27b3a5;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a2c40;
+  --sidebar-accent-foreground: #d4deff;
+  --sidebar-border: #1a2a46;
+  --sidebar-ring: #ffb860;
+}
+
+@theme inline {
+  /* Base Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Brand Colors */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-pressed: var(--primary-pressed);
+
+  /* Secondary & Neutral */
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-neutral: var(--neutral);
+  --color-neutral-foreground: var(--neutral-foreground);
+
+  /* Surface & States */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Borders & Inputs */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-input-border: var(--input-border);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+
+  /* Charts */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Border Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Spacing (8-point grid) */
+  --spacing-1: var(--spacing-1);
+  --spacing-2: var(--spacing-2);
+  --spacing-3: var(--spacing-3);
+  --spacing-4: var(--spacing-4);
+  --spacing-6: var(--spacing-6);
+  --spacing-8: var(--spacing-8);
+  --spacing-10: var(--spacing-10);
+  --spacing-16: var(--spacing-16);
+
+  /* Typography */
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-lg: var(--text-lg);
+  --text-xl: var(--text-xl);
+  --text-2xl: var(--text-2xl);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    background: linear-gradient(180deg, #f5f7fb 0%, #edf1f8 55%, #f5f7fb 100%);
+  }
+
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      max-width: 640px;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      max-width: 768px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1024px;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container {
+      max-width: 1200px;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1400px;
+    }
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: var(--font-heading);
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: var(--font-heading);
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: var(--font-heading);
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: var(--font-heading);
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/**
+ * CandidateAssessor Component Styles
+ * Following the design system specifications for buttons, cards, and inputs
+ */
+@layer components {
+  /* Primary Button */
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-3) var(--spacing-6);
+    font-weight: var(--font-weight-medium);
+    transition: all 150ms ease-out;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+  }
+
+  .btn-primary:active {
+    background-color: var(--primary-pressed);
+  }
+
+  .btn-primary:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    background-color: var(--background);
+    color: var(--foreground);
+    border: 1px solid var(--neutral);
+    border-radius: var(--radius-lg);
+    padding: calc(var(--spacing-3) - 1px) calc(var(--spacing-6) - 1px);
+    font-weight: var(--font-weight-medium);
+    transition: all 150ms ease-out;
+  }
+
+  .btn-secondary:hover {
+    background-color: color-mix(in srgb, var(--neutral) 6%, var(--background));
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Card Styles */
+  .card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4) var(--spacing-6);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+
+  /* Input Styles */
+  .input {
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--text-base);
+    transition: all 150ms ease-out;
+  }
+
+  .input:focus {
+    outline: 4px solid color-mix(in srgb, var(--ring) 25%, transparent);
+    border-color: var(--ring);
+  }
+
+  .input::placeholder {
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  }
+
+  /* Data Visualization */
+  .chart-grid {
+    stroke: color-mix(in srgb, var(--foreground) 12%, transparent);
+  }
+
+  .chart-text {
+    fill: var(--muted-foreground);
+    font-size: var(--text-xs);
+  }
+
+  /* Icon Styles */
+  .icon {
+    stroke-width: 2px;
+    color: var(--neutral);
+  }
+
+  .icon-accent {
+    color: var(--primary);
+  }
+}
